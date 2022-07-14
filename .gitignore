@@ -3,6 +3,11 @@
 # Edit at https://www.gitignore.io/?templates=python,visualstudiocode
 
 ### Python ###
+images/*
+undistorted/*
+videos/*
+
+!*/.gitkeep
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

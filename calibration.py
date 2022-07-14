@@ -18,6 +18,7 @@ extension = 'mp4'        # Video Extension
 video = ''               # If empty => videos/{camera_name}.mp4
 skip_frames = 25         # Number of frames to skip in video
 board_size = (6, 5)      # Chess Board Ratio
+square_size = 0.03       # Board's square size in meters
 
 
 def video_to_frames(skip_frames, video):
@@ -50,7 +51,7 @@ criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
 objp = np.zeros((board_size[1]*board_size[0],3), np.float32)
-objp[:,:2] = np.mgrid[0:board_size[0],0:board_size[1]].T.reshape(-1,2)
+objp[:,:2] = np.mgrid[0:board_size[0],0:board_size[1]].T.reshape(-1,2) * square_size
 
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
