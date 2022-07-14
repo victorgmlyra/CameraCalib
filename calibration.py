@@ -98,7 +98,7 @@ with open('calibration/' + camera_name + '.txt', 'w') as calibfile:
         for j in range(3):
             calibfile.write('{0:.5f} '.format(mtx[i, j]))
         calibfile.write('\n')
-    calibfile.write('\nDistortion Coefficients:\n')
+    calibfile.write('\nDistortion Coefficients (k1 k2 p1 p2 k3):\n')
     calibfile.write(distortion)
 
 if undistort:
