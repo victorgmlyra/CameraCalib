@@ -24,6 +24,7 @@ extension = 'mp4'        # Video Extension
 video = ''               # If empty => videos/{camera_name}.mp4
 skip_frames = 25         # Number of frames to skip in video
 board_size = (6, 5)      # Chess Board Ratio
+square_size = 0.03       # Board's square size in meters
 ```
 
 For more information see the [OpenCV Documentation](https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html)
