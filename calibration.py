@@ -6,6 +6,7 @@
     Python Version: 3.7
 '''
 
+from nbformat import write
 import numpy as np
 import cv2
 import glob, os
@@ -13,7 +14,8 @@ import glob, os
 # VARIABLES
 frames_from_video = False # If true => Extract frames from a video file
 undistort = True         # If true => Undistort all calibration images
-camera_name = 'mapir'   # Name directories, video and output file
+save_new_matrix = True   # Saves new camera matrix after undistortion
+camera_name = 'mapir'    # Name directories, video and output file
 extension = 'mp4'        # Video Extension
 video = ''               # If empty => videos/{camera_name}.mp4
 skip_frames = 25         # Number of frames to skip in video
@@ -45,6 +47,11 @@ def video_to_frames(skip_frames, video):
         num_frame += 1
         ret, frame = video.read()
 
+def write_matrix(out_file, matrix):
+    for i in range(3):
+        for j in range(3):
+            out_file.write('{0:.6f} '.format(matrix[i, j]))
+        out_file.write('\n')
 
 # termination criteria
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -98,29 +105,30 @@ for k in dist[0]:
     distortion += '{0:.5f}'.format(k) + ' '
 with open('calibration/' + camera_name + '.txt', 'w') as calibfile:
     calibfile.write('Intrinsic Matrix:\n')
-    for i in range(3):
-        for j in range(3):
-            calibfile.write('{0:.5f} '.format(mtx[i, j]))
-        calibfile.write('\n')
+    write_matrix(calibfile, mtx)
     calibfile.write('\nDistortion Coefficients (k1 k2 p1 p2 k3):\n')
     calibfile.write(distortion)
 
-if undistort:
-    print('Undistorting Images...')
-    directory = 'undistorted/{}'.format(camera_name)
-    try:
-        os.mkdir(directory)
-    except os.error:
-        print('{} folder already exists.'.format(directory))
+    if undistort:
+        print('Undistorting Images...')
+        directory = 'undistorted/{}'.format(camera_name)
+        try:
+            os.mkdir(directory)
+        except os.error:
+            print('{} folder already exists.'.format(directory))
 
-    for i, fname in enumerate(images):
-        img = cv2.imread(fname)
-        h,  w = img.shape[:2]
-        newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
+        for i, fname in enumerate(images):
+            img = cv2.imread(fname)
+            h,  w = img.shape[:2]
+            newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
+            if save_new_matrix:
+                calibfile.write('\n\nNew Camera Matrix (after undistortion):\n')
+                write_matrix(calibfile, newcameramtx)
+                save_new_matrix = False
 
-        # undistort
-        dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
-        # crop the image
-        # x, y, w, h = roi
-        # dst = dst[y:y+h, x:x+w]
-        cv2.imwrite(directory + '/undist{:03d}.png'.format(i), dst)
+            # undistort
+            dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
+            # crop the image
+            # x, y, w, h = roi
+            # dst = dst[y:y+h, x:x+w]
+            cv2.imwrite(directory + '/undist{:03d}.png'.format(i), dst)
