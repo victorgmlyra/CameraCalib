@@ -11,14 +11,14 @@ import cv2
 import glob, os
 
 # VARIABLES
-frames_from_video = True # If true => Extract frames from a video file
+frames_from_video = False # If true => Extract frames from a video file
 undistort = True         # If true => Undistort all calibration images
-camera_name = 'note10'   # Name directories, video and output file
+camera_name = 'mapir'   # Name directories, video and output file
 extension = 'mp4'        # Video Extension
 video = ''               # If empty => videos/{camera_name}.mp4
 skip_frames = 25         # Number of frames to skip in video
-board_size = (6, 5)      # Chess Board Ratio
-square_size = 0.03       # Board's square size in meters
+board_size = (9, 7)      # Chess Board Ratio
+square_size = 0.02       # Board's square size in meters
 
 
 def video_to_frames(skip_frames, video):
@@ -60,27 +60,31 @@ imgpoints = [] # 2d points in image plane.
 if frames_from_video:
     video_to_frames(skip_frames, video)
 
-images = glob.glob('images/{}/*.jpg'.format(camera_name))
+images = glob.glob('images/{}/*'.format(camera_name))
 images.sort()
 
+num_found = 0
 for fname in images:
     img = cv2.imread(fname)
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    # img = cv2.resize(img, (0, 0), fx=0.3, fy=0.3)
+    gray = img[:, :, 1]
 
     # Find the chess board corners
     ret, corners = cv2.findChessboardCorners(gray, board_size, None)
 
     # If found, add object points, image points (after refining them)
     if ret == True:
+        num_found += 1
         objpoints.append(objp)
 
         corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
         imgpoints.append(corners2)
 
         # Draw and display the corners
-        img = cv2.drawChessboardCorners(img, board_size, corners2,ret)
-        cv2.imshow('img',img)
-        cv2.waitKey(200)
+        print("Num patterns found: {}/{}".format(num_found, len(images)))
+        # img = cv2.drawChessboardCorners(img, board_size, corners2,ret)
+        # cv2.imshow('img',img)
+        # cv2.waitKey(5)
 
 cv2.destroyAllWindows()
 
