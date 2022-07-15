@@ -132,3 +132,12 @@ with open('calibration/' + camera_name + '.txt', 'w') as calibfile:
             # x, y, w, h = roi
             # dst = dst[y:y+h, x:x+w]
             cv2.imwrite(directory + '/undist{:03d}.png'.format(i), dst)
+
+
+# Save with OpenCV file storage
+cv_file = cv2.FileStorage('calibration/' + camera_name + '.yaml', cv2.FILE_STORAGE_WRITE)
+cv_file.write("K", mtx)
+cv_file.write("D", dist)
+cv_file.write("newK", newcameramtx)
+# note you *release* you don't close() a FileStorage object
+cv_file.release() 
