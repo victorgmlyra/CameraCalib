@@ -12,13 +12,13 @@ import cv2
 import glob, os
 
 # VARIABLES
-frames_from_video = False # If true => Extract frames from a video file
+frames_from_video = True # If true => Extract frames from a video file
 undistort = True         # If true => Undistort all calibration images
 save_new_matrix = True   # Saves new camera matrix after undistortion
-camera_name = 'mapir'    # Name directories, video and output file
+camera_name = 'mapir_480p'    # Name directories, video and output file
 extension = 'mp4'        # Video Extension
 video = ''               # If empty => videos/{camera_name}.mp4
-skip_frames = 25         # Number of frames to skip in video
+skip_frames = 10         # Number of frames to skip in video
 board_size = (9, 7)      # Chess Board Ratio
 square_size = 0.02       # Board's square size in meters
 
@@ -89,9 +89,9 @@ for fname in images:
 
         # Draw and display the corners
         print("Num patterns found: {}/{}".format(num_found, len(images)))
-        # img = cv2.drawChessboardCorners(img, board_size, corners2,ret)
-        # cv2.imshow('img',img)
-        # cv2.waitKey(5)
+        img = cv2.drawChessboardCorners(img, board_size, corners2,ret)
+        cv2.imshow('img',img)
+        cv2.waitKey(5)
 
 cv2.destroyAllWindows()
 
