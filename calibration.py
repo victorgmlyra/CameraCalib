@@ -6,7 +6,6 @@
     Python Version: 3.7
 '''
 
-from nbformat import write
 import numpy as np
 import cv2
 import glob, os
@@ -15,8 +14,8 @@ import glob, os
 frames_from_video = True # If true => Extract frames from a video file
 undistort = True         # If true => Undistort all calibration images
 save_new_matrix = True   # Saves new camera matrix after undistortion
-camera_name = 'mapir_480p'    # Name directories, video and output file
-extension = 'mp4'        # Video Extension
+camera_name = 'robot_camera'    # Name directories, video and output file
+extension = 'avi'        # Video Extension
 video = ''               # If empty => videos/{camera_name}.mp4
 skip_frames = 10         # Number of frames to skip in video
 board_size = (9, 7)      # Chess Board Ratio
